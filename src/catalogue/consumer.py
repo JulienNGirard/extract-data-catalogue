@@ -50,7 +50,6 @@ class DataConsumer:
 
             data_object_id: str = data_record.data.get("data-object", None)
 
-            pprint("Data object ID: " + data_object_id)
             if not data_object_id:
                 print("No data object in data record")
                 return
