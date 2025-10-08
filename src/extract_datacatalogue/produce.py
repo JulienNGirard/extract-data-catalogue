@@ -4,29 +4,39 @@ import time
 import uuid
 from pathlib import Path
 from pprint import pprint
-
+import json
 from nuvla.api import Api as Nuvla
 
-from catalogue.producer import DataProducer
+from extract_datacatalogue.catalogue.producer import DataProducer
 
-NUVLA_ENDPOINT = os.getenv("NUVLA_ENDPOINT", "https://nuvla.io")
-NUVLA_KEY = os.getenv("NUVLA_KEY", "")
-NUVLA_KEY_SECRET = os.getenv("NUVLA_SECRET", "")
+def import_config(filename: str) -> dict:
+    with open(f"{filename}") as f:
+        data = json.load(f)
+    return data
+
+config=import_config("config.json")
+print(config)
+NUVLA_ENDPOINT = config["NUVLA_ENDPOINT"]
+NUVLA_KEY = config["NUVLA_KEY"]
+NUVLA_KEY_SECRET = config["NUVLA_KEY_SECRET"]
 
 # MQTT Configuration
-TOPIC = os.getenv("MQTT_TOPIC", "test-topic")
-MQTT_BROKER: str = os.getenv("MQTT_BROKER", "91.134.104.104")
-MQTT_PORT: int = int(os.getenv("MQTT_PORT", 1883))
+#TOPIC = config["MQTT_TOPIC", "test-topic")
+#MQTT_BROKER: str = config["MQTT_BROKER", "91.134.104.104")
+#MQTT_PORT: int = int(config["MQTT_PORT", 1883))
 
 # S3 Configuration
-S3_BUCKET = os.getenv("S3_BUCKET", "nuvla")
-S3_CREDENTIAL = os.getenv("S3_CREDENTIAL", "")
-S3_INFRA_SERVICE_ID = os.getenv("S3_INFRA_SERVICE_ID", "")
-
+S3_BUCKET = config["S3_BUCKET"]
+S3_CREDENTIAL = config["S3_CREDENTIAL"]
+S3_INFRA_SERVICE_ID = config["S3_INFRA_SERVICE_ID"]
+print(S3_BUCKET)
 
 def main(file: Path):
     nuvla: Nuvla = Nuvla(endpoint=NUVLA_ENDPOINT, insecure=False, )
     resp = nuvla.login_apikey(NUVLA_KEY, NUVLA_KEY_SECRET)
+    print(resp)
+    #resp = nuvla.login_password(NUVLA_LOGIN, NUVLA_PASSWORD)
+
     if not resp or resp.status_code != 201:
         print("Failed to login to Nuvla. Please check your credentials.")
         print(resp.content)
@@ -58,6 +68,7 @@ def get_ts_file_name(file: Path) -> str:
 
 
 if __name__ == "__main__":
+    
     if not NUVLA_KEY or not NUVLA_KEY_SECRET:
         print("Please set NUVLA_KEY and NUVLA_KEY_SECRET environment variables.")
         exit(1)

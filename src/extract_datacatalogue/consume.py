@@ -4,8 +4,9 @@ from pprint import pprint
 import boto3
 from botocore.config import Config
 
-from catalogue.consumer import DataConsumer
+from extract_datacatalogue.catalogue.consumer import DataConsumer
 from nuvla.api import Api as Nuvla
+
 
 S3_BUCKET = os.getenv("S3_BUCKET")
 
@@ -14,9 +15,9 @@ NUVLA_KEY = os.getenv("NUVLA_KEY", "")
 NUVLA_KEY_SECRET = os.getenv("NUVLA_SECRET", "")
 
 # MQTT Configuration
-TOPIC = os.getenv("MQTT_TOPIC", "test-topic")
-MQTT_BROKER: str = os.getenv("MQTT_BROKER", "91.134.104.104")
-MQTT_PORT: int = int(os.getenv("MQTT_PORT", 1883))
+#TOPIC = os.getenv("MQTT_TOPIC", "test-topic")
+#MQTT_BROKER: str = os.getenv("MQTT_BROKER", "91.134.104.104")
+#MQTT_PORT: int = int(os.getenv("MQTT_PORT", 1883))
 
 # Additional S3 Configuration
 S3_ACCESS_KEY = os.getenv("S3_ACCESS_KEY_ID_SITE_2", "")
